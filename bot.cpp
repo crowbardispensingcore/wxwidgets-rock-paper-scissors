@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+
+
 void Bot::set_choice() {
 	int temp = rand() % 3 + 1;    //generate random number between 1 and 3
 	switch (temp) {
@@ -17,6 +19,7 @@ void Bot::set_choice() {
 		break;
 	}
 }
+
 void Bot::update_sequence(string choice) {
 	if (sequence.size() == 5) {
 		sequence.pop_back();
@@ -26,6 +29,7 @@ void Bot::update_sequence(string choice) {
 		sequence.push_front(choice);
 	}
 }
+
 void Bot::set_choiceML(Move player_choice){
 	update_sequence(convert_Move_to_str(player_choice));
 	if (sequence.size() < 5) {
@@ -42,12 +46,33 @@ void Bot::set_choiceML(Move player_choice){
 		int paper = umap[curr_seq + "P"];
 		int scissor = umap[curr_seq + "S"];
 		if (rock > paper && rock > scissor) {
+			if (paper > scissor) {
+				prediction = Move::PAPER;
+			}
+			else {
+				prediction = Move::SCISSORS;
+			}
+
 			choice = Move::ROCK;
 		}
 		else if (paper > rock && paper > scissor) {
+			if (rock > scissor) {
+				prediction = Move::ROCK;
+			}
+			else {
+				prediction = Move::SCISSORS;
+			}
+
 			choice = Move::PAPER;
 		}
 		else if (scissor > rock && scissor > paper) {
+			if (rock > paper) {
+				prediction = Move::ROCK;
+			}
+			else {
+				prediction = Move::PAPER;
+			}
+
 			choice = Move::SCISSORS;
 		}
 		else {
@@ -57,6 +82,7 @@ void Bot::set_choiceML(Move player_choice){
 		return;
 	}
 }
+
 string Bot::convert_Move_to_str(Move player_choice) {
 	if (player_choice == Move::ROCK) {
 		return "R";
@@ -68,6 +94,7 @@ string Bot::convert_Move_to_str(Move player_choice) {
 		return "S";
 	}
 }
+
 Move Bot::get_choice() {
 	return choice;
 }
@@ -85,4 +112,13 @@ string Bot::print_choice() {
 		return "NOT_SET";
 		break;
 	}
+}
+
+Move Bot::getPrediction() {
+	return prediction;
+}
+
+void Bot::resetML() {
+	sequence.clear();
+	umap.clear();
 }

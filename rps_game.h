@@ -7,7 +7,7 @@
 #endif
 
 class RpsGame : public wxApp {
-    public:
+public:
     virtual bool OnInit();
 };
 

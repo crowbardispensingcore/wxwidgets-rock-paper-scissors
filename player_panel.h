@@ -6,16 +6,28 @@
 #include <wx/wx.h>
 #endif
 
+#include "game_manager.h"
+#include "game_info_panel.h"
+#include "ai_panel.h"
+#include "move.h"
+
+
 using std::string;
 
 class PlayerPanel : public wxPanel {
 public:
-    PlayerPanel(wxFrame* parent) : wxPanel(parent, wxID_ANY) {
-        init();
-    }
+    PlayerPanel(wxFrame* parent, GameManager* gameManager, GameInfoPanel* gameInfoPanel, AiPanel* aiPanel);
+
+    void resetPanel();
+    
 
 private:
+    GameInfoPanel* gameInfoPanel;
+    AiPanel* aiPanel;
+    GameManager* gameManager;
+
     wxStaticText* moveChoice;
+    
 
     void init();
 
@@ -24,4 +36,7 @@ private:
     void onScissors(wxCommandEvent& event);
 
     void updateChoiceLabel(const string choice);
+
+    void advanceOneRoundOfGame(enum Move move);
+    
 };

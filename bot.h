@@ -8,6 +8,7 @@ using namespace std;
 class Bot {
 private:
 	Move choice;
+	Move prediction;
 	deque <string> sequence;
 	unordered_map<string, int> umap;
 public:
@@ -16,5 +17,8 @@ public:
 	void update_sequence(string choice);
 	string convert_Move_to_str(Move player_choice);
 	Move get_choice();
+	Move getPrediction();
 	string print_choice();
+
+	void resetML();
 };

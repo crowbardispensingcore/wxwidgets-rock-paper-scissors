@@ -1,5 +1,20 @@
 #include "ai_panel.h"
 
+AiPanel::AiPanel(wxFrame* parent, GameManager* gameManager) :
+    wxPanel(parent, wxID_ANY),
+    gameManager(gameManager)
+{
+    init();
+}
+
+void AiPanel::updateAiPredictionText(string prediction) {
+    aiPredictionText->SetLabel("You Are Most Likely To Choose " + prediction);
+}
+
+void AiPanel::updateAiMoveText(string aiMove) {
+    aiMoveText->SetLabel(aiMove);
+}
+
 void AiPanel::init() {
     wxSizer* aiPanelSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -56,4 +71,9 @@ void AiPanel::init() {
     aiPanelSizer->Add(aiMovePanel, 0, wxALIGN_LEFT, 0);
 
     SetSizer(aiPanelSizer);
+}
+
+void AiPanel::resetPanel() {
+    updateAiPredictionText("Waiting For Input...");
+    updateAiMoveText("Waiting For Input...");
 }

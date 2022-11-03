@@ -38,8 +38,15 @@ void Player::setMove() {
 	}
 }
 
+void Player::setMoveGui(Move move) {
+	this->move = move;
+	moveIsSet = true;
+	std::cout << "Player move is set from GUI." << std::endl;
+}
+
 Move Player::getMove() {
 	Move currentMove = move;
+	moveIsSet = false;
 	move = Move::NOT_SET;
 	return currentMove;
 }

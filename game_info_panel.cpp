@@ -1,8 +1,49 @@
 #include "game_info_panel.h"
 
+GameInfoPanel::GameInfoPanel(wxFrame* parent, GameManager* gameManager) :
+    wxPanel(parent, wxID_ANY),
+    gameManager(gameManager)
+{
+    init();
+}
+
+void GameInfoPanel::incrementPlayerWinCount() {
+    playerWinCount++;
+    updatePlayerWinCountText(playerWinCount);
+}
+
+void GameInfoPanel::incrementAiWinCount() {
+    aiWinCount++;
+    updateAiWinCountText(aiWinCount);
+}
+
+void GameInfoPanel::incrementTieCount() {
+    tieCount++;
+    updateTieCountText(tieCount);
+}
+
 void GameInfoPanel::init() {
     wxSizer* mainPanelSizer = new wxBoxSizer(wxVERTICAL);
 
+    /* Remaining round count panel */
+    wxPanel* remainingRoundCountPanel = new wxPanel(this, wxID_ANY);
+    wxSizer* remainingRoundCountPanelSizer = new wxBoxSizer(wxVERTICAL);
+
+    wxStaticText* remainingRoundCountLabel = new wxStaticText(
+        remainingRoundCountPanel,
+        wxID_ANY,
+        wxT("Remaining Round(s)")
+    );
+
+    remainingRoundCountText = new wxStaticText(
+        remainingRoundCountPanel,
+        wxID_ANY,
+        "20"
+    );
+
+    remainingRoundCountPanelSizer->Add(remainingRoundCountLabel, 0, wxALIGN_CENTER, 0);
+    remainingRoundCountPanelSizer->Add(remainingRoundCountText, 0, wxALIGN_CENTER, 0);
+    remainingRoundCountPanel->SetSizer(remainingRoundCountPanelSizer);
 
     /* Winner panel */
     wxPanel* winnerPanel = new wxPanel(this, wxID_ANY);
@@ -15,14 +56,14 @@ void GameInfoPanel::init() {
     );
     winnerPanelLabel->SetFont(winnerPanelLabel->GetFont().Larger().Bold());
 
-    winner = new wxStaticText(
+    winnerText = new wxStaticText(
         winnerPanel,
         wxID_ANY,
         "Waiting For Input..."
     );
 
     winnerPanelSizer->Add(winnerPanelLabel, 0, wxALIGN_CENTER, 0);
-    winnerPanelSizer->Add(winner, 0, wxALIGN_CENTER, 0);
+    winnerPanelSizer->Add(winnerText, 0, wxALIGN_CENTER, 0);
     winnerPanel->SetSizer(winnerPanelSizer);
 
 
@@ -107,6 +148,8 @@ void GameInfoPanel::init() {
     gameStatsPanel->SetSizer(gameStatsPanelSizer);
 
     /* Game info panel */
+    mainPanelSizer->Add(remainingRoundCountPanel, 0, wxALIGN_CENTER, 0);
+    mainPanelSizer->AddSpacer(20);
     mainPanelSizer->Add(winnerPanel, 0, wxALIGN_CENTER, 0);
     mainPanelSizer->AddSpacer(20);
     mainPanelSizer->Add(gameStatsPanel, 0, wxALIGN_CENTER, 0);
@@ -114,18 +157,30 @@ void GameInfoPanel::init() {
     SetSizer(mainPanelSizer);
 }
 
-void GameInfoPanel::updateWinner(const string winner) {
-
+void GameInfoPanel::updateWinnerText(string winner) {
+    winnerText->SetLabel(winner);
 }
 
-void GameInfoPanel::updatePlayerWinCountText(const int playerWinCount) {
-
+void GameInfoPanel::updateRemainingRoundCountText(int remainingRoundCount) {
+    remainingRoundCountText->SetLabel(to_string(remainingRoundCount));
 }
 
-void GameInfoPanel::updateAiWinCountText(const int aiWinCount) {
-
+void GameInfoPanel::updatePlayerWinCountText(int playerWinCount) {
+    playerWinCountText->SetLabel(to_string(playerWinCount));
 }
 
-void GameInfoPanel::updateTieCountText(const int tieCount) {
+void GameInfoPanel::updateAiWinCountText(int aiWinCount) {
+    aiWinCountText->SetLabel(to_string(aiWinCount));
+}
 
+void GameInfoPanel::updateTieCountText(int tieCount) {
+    tieCountText->SetLabel(to_string(tieCount));
+}
+
+void GameInfoPanel::resetPanel(int remainingRoundCount) {
+    updatePlayerWinCountText(0);
+    updateAiWinCountText(0);
+    updateTieCountText(0);
+    updateWinnerText("Waiting For Input...");
+    updateRemainingRoundCountText(remainingRoundCount);
 }

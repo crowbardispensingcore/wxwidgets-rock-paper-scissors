@@ -2,16 +2,16 @@
 
 wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(START_A_NEW_GAME, MainFrame::onStartANewGame)
-    EVT_MENU(ABOUT, MainFrame::onAbout)
     EVT_MENU(EXIT, MainFrame::onExit)
+    EVT_MENU(ABOUT, MainFrame::onAbout)
 wxEND_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title, GameManager* gameManager) :
     wxFrame(NULL, wxID_ANY, title),
-    playerPanel(new PlayerPanel(this)),
-    aiPanel(new AiPanel(this)),
-    gameInfoPanel(new GameInfoPanel(this)),
-    gameManager(gameManager)
+    gameManager(gameManager),
+    aiPanel(new AiPanel(this, gameManager)),
+    gameInfoPanel(new GameInfoPanel(this, gameManager)),
+    playerPanel(new PlayerPanel(this, gameManager, gameInfoPanel, aiPanel))
 {
     init();
 
@@ -22,6 +22,9 @@ MainFrame::MainFrame(const wxString& title, GameManager* gameManager) :
 
 MainFrame::~MainFrame() {
     delete playerPanel;
+    delete aiPanel;
+    delete gameInfoPanel;
+    delete gameManager;
 }
 
 void MainFrame::init() {
@@ -64,7 +67,7 @@ void MainFrame::onAbout(wxCommandEvent& WXUNUSED(event)) {
         wxString::Format(
            "Play Rock Paper Scissors with a computer!",
            wxVERSION_STRING,
-           wxGetOsDescription() 
+           wxGetOsDescription()
         ),
         "About the game",
         wxOK | wxICON_INFORMATION,
@@ -77,5 +80,10 @@ void MainFrame::onExit(wxCommandEvent& WXUNUSED(event)) {
 }
 
 void MainFrame::onStartANewGame(wxCommandEvent& WXUNUSED(event)) {
-    Close(true);
+    int roundCount = 20;
+
+    gameManager->initGame(roundCount);
+    gameInfoPanel->resetPanel(roundCount);
+    aiPanel->resetPanel();
+    playerPanel->resetPanel();
 }

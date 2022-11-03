@@ -1,20 +1,28 @@
 #include "game_manager.h"
 #include <iostream>
+
+GameManager::GameManager(Player* player, Bot* bot) :
+    player(player),
+    bot(bot)
+{
+
+}
+
 void GameManager::startGame(char gameType, int roundCount) {
 
     for (int i = 0; i < roundCount; i++) {    //generate random choice from bot 20 times 
-        game_player.setMove();
+        player->setMove();
         if (gameType == 'r') {
-            game_bot.set_choice();
+            bot->set_choice();
         }
         else if (gameType == 'm') {
-            game_bot.set_choiceML(game_player.getMove());
+            bot->set_choiceML(player->getMove());
         }
         cout << "Round # " << i + 1 << endl;
-        Move player_choice = game_player.getMove();
-        Move bot_choice = game_bot.get_choice();
+        Move player_choice = player->getMove();
+        Move bot_choice = bot->get_choice();
         int winner = decideWinner(player_choice, bot_choice);
-        cout << "test bot chose: " << game_bot.print_choice() << endl;
+        cout << "test bot chose: " << bot->print_choice() << endl;
         if (winner == 0) {
             cout << "TIE" << endl;
         }
@@ -26,6 +34,7 @@ void GameManager::startGame(char gameType, int roundCount) {
         }
     }
 }
+
 int GameManager::decideWinner(Move player_choice, Move bot_choice) {
     if (player_choice == Move::ROCK) {
         if (bot_choice == Move::ROCK) {
@@ -60,4 +69,12 @@ int GameManager::decideWinner(Move player_choice, Move bot_choice) {
             return 1;
         }
     }
+}
+
+void GameManager::initGame(int roundCount) {
+    this->remainingRoundCount = roundCount;
+    playerWinCount = 0;
+    aiWinCount = 0;
+    tieCount = 0;
+    bot->resetML();
 }

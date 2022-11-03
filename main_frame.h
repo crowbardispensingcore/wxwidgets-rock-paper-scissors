@@ -13,6 +13,7 @@
 
 class MainFrame : public wxFrame {
 public:
+
     MainFrame(const wxString& title, GameManager* gameManager);
 
     virtual ~MainFrame();
@@ -25,12 +26,15 @@ public:
 
 private:
     wxDECLARE_EVENT_TABLE();
-
+    
     GameManager* gameManager;
 
-    PlayerPanel* playerPanel;
     AiPanel* aiPanel;
     GameInfoPanel* gameInfoPanel;
+    
+    /* playerPanel need to be declared last, because the initialization order is 
+        the declaration order, and playerPanel need gameInfoPanel and aiPanel */
+    PlayerPanel* playerPanel;
 
     void init();
     void initSizer();

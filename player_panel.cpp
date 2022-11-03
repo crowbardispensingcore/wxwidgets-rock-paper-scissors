@@ -1,5 +1,14 @@
 #include "player_panel.h"
 
+PlayerPanel::PlayerPanel(wxFrame* parent, GameManager* gameManager, GameInfoPanel* gameInfoPanel, AiPanel* aiPanel) : 
+    wxPanel(parent, wxID_ANY),
+    gameManager(gameManager),
+    gameInfoPanel(gameInfoPanel),
+    aiPanel(aiPanel)
+{
+    init();
+}
+
 void PlayerPanel::init() {
     wxSizer* playerPanelSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -103,17 +112,73 @@ void PlayerPanel::init() {
 }
 
 void PlayerPanel::onRock(wxCommandEvent& event) {
-    updateChoiceLabel("Rock");
+    advanceOneRoundOfGame(Move::ROCK);
 }
 
 void PlayerPanel::onPaper(wxCommandEvent& event) {
-    updateChoiceLabel("Paper");
+    advanceOneRoundOfGame(Move::PAPER);
 }
 
 void PlayerPanel::onScissors(wxCommandEvent& event) {
-    updateChoiceLabel("Scissors");
+    advanceOneRoundOfGame(Move::SCISSORS);
 }
 
 void PlayerPanel::updateChoiceLabel(const string choice) {
-    moveChoice->SetLabelText(choice);
+    moveChoice->SetLabel(choice);
+}
+
+void PlayerPanel::advanceOneRoundOfGame(enum Move playerMove) {
+    if (gameManager->remainingRoundCount <= 0) {
+        return;
+    }
+
+    gameManager->remainingRoundCount -= 1;
+    gameInfoPanel->updateRemainingRoundCountText(gameManager->remainingRoundCount);
+
+    switch (playerMove) {
+        case Move::ROCK:
+            gameManager->player->setMoveGui(Move::ROCK);
+            updateChoiceLabel("Rock");
+            break;
+        case Move::PAPER:
+            gameManager->player->setMoveGui(Move::PAPER);
+            updateChoiceLabel("Paper");
+            break;
+        case Move::SCISSORS:
+            gameManager->player->setMoveGui(Move::SCISSORS);
+            updateChoiceLabel("Scissors");
+            break;
+        default:
+            gameManager->player->setMoveGui(Move::NOT_SET);
+            updateChoiceLabel("Waiting For Input...");
+            break;
+    }
+
+    gameManager->bot->set_choiceML(playerMove);
+    enum Move botMove = gameManager->bot->get_choice();
+    enum Move botPrediction = gameManager->bot->getPrediction();
+
+    aiPanel->updateAiPredictionText(moveEnumToString(botPrediction));
+    aiPanel->updateAiMoveText(moveEnumToString(botMove));
+
+    int result = gameManager->decideWinner(playerMove, botMove);
+
+    switch (result) {
+        case 0: // Tie
+            gameInfoPanel->updateWinnerText("Tie");
+            gameInfoPanel->incrementTieCount();
+            break;
+        case -1: // AI wins
+            gameInfoPanel->updateWinnerText("AI");
+            gameInfoPanel->incrementAiWinCount();
+            break;
+        default: // Player wins
+            gameInfoPanel->updateWinnerText("You");
+            gameInfoPanel->incrementPlayerWinCount();
+            break;
+    }
+}
+
+void PlayerPanel::resetPanel() {
+    updateChoiceLabel("Waiting For Input...");
 }
