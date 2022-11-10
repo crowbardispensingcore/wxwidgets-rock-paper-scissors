@@ -1,10 +1,10 @@
 #include "main_frame.h"
 
-wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
-    EVT_MENU(START_A_NEW_GAME, MainFrame::onStartANewGame)
-    EVT_MENU(EXIT, MainFrame::onExit)
-    EVT_MENU(ABOUT, MainFrame::onAbout)
-wxEND_EVENT_TABLE()
+// wxBEGIN_EVENT_TABLE(MainFrame, wxFrame)
+    // EVT_MENU(START_A_NEW_GAME, MainFrame::onStartANewGame)
+    // EVT_MENU(EXIT, MainFrame::onExit)
+    // EVT_MENU(ABOUT, MainFrame::onAbout)
+// wxEND_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title, GameManager* gameManager) :
     wxFrame(NULL, wxID_ANY, title),
@@ -49,20 +49,25 @@ void MainFrame::initSizer() {
 
 void MainFrame::initMenuBar() {
     wxMenu* mainFrameFileMenu = new wxMenu;
-    mainFrameFileMenu->Append(START_A_NEW_GAME, "Start A New Game", "Start A New Game");
-    mainFrameFileMenu->Append(EXIT, "Exit", "Exit the game");
+    mainFrameFileMenu->Append(MainMenuEvent::startANewGame, "Start A New Game", "Start A New Game");
+    mainFrameFileMenu->Append(wxID_EXIT, "Exit", "Exit the game");
 
     wxMenu* mainFrameHelpMenu = new wxMenu;
-    mainFrameHelpMenu->Append(ABOUT, "About", "About the game");
+    mainFrameHelpMenu->Append(wxID_ABOUT, "About", "About the game");
 
 
     wxMenuBar* mainFrameMenuBar = new wxMenuBar();
     mainFrameMenuBar->Append(mainFrameFileMenu, "File");
     mainFrameMenuBar->Append(mainFrameHelpMenu, "About");
+
+    this->Bind(wxEVT_MENU, &MainFrame::onAbout, this, wxID_ABOUT);
+    this->Bind(wxEVT_MENU, &MainFrame::onExit, this, wxID_EXIT);
+    this->Bind(wxEVT_MENU, &MainFrame::onStartANewGame, this, startANewGame);
+
     SetMenuBar(mainFrameMenuBar);
 }
 
-void MainFrame::onAbout(wxCommandEvent& WXUNUSED(event)) {
+void MainFrame::onAbout(wxCommandEvent& event) {
     wxMessageBox(
         wxString::Format(
            "Play Rock Paper Scissors with a computer!",
@@ -76,10 +81,10 @@ void MainFrame::onAbout(wxCommandEvent& WXUNUSED(event)) {
 }
 
 void MainFrame::onExit(wxCommandEvent& WXUNUSED(event)) {
-    Close(true);
+    this->Close(true);
 }
 
-void MainFrame::onStartANewGame(wxCommandEvent& WXUNUSED(event)) {
+void MainFrame::onStartANewGame(wxCommandEvent& event) {
     int roundCount = 20;
 
     gameManager->initGame(roundCount);

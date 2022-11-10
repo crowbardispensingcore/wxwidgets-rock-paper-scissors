@@ -25,7 +25,7 @@ public:
     void onStartANewGame(wxCommandEvent& event);
 
 private:
-    wxDECLARE_EVENT_TABLE();
+    // wxDECLARE_EVENT_TABLE();
     
     GameManager* gameManager;
 
@@ -41,8 +41,6 @@ private:
     void initMenuBar();
 };
 
-enum {
-    START_A_NEW_GAME = wxID_ANY,
-    ABOUT = wxID_ABOUT,
-    EXIT = wxID_EXIT
+enum MainMenuEvent {
+    startANewGame = 0,
 };
