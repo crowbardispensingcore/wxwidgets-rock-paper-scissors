@@ -122,3 +122,11 @@ void Bot::resetML() {
 	sequence.clear();
 	umap.clear();
 }
+
+void Bot::saveFrequencyToFile() {
+	ofstream fileStream;
+	fileStream.open("frequency.txt");
+	for (auto i = umap.begin(); i != umap.end(); i++) {
+		fileStream << i->first << ": " << i->second << "\n";
+	}
+}

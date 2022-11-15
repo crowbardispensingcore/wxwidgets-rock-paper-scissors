@@ -177,6 +177,8 @@ void PlayerPanel::advanceOneRoundOfGame(enum Move playerMove) {
             gameInfoPanel->incrementPlayerWinCount();
             break;
     }
+
+    gameManager->bot->saveFrequencyToFile();
 }
 
 void PlayerPanel::resetPanel() {

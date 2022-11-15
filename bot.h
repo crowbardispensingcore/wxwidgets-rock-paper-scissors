@@ -1,5 +1,6 @@
 #pragma once
 
+#include <fstream>
 #include <string>
 #include <unordered_map>
 #include <deque>
@@ -19,6 +20,8 @@ public:
 	Move get_choice();
 	Move getPrediction();
 	string print_choice();
+
+	void saveFrequencyToFile();
 
 	void resetML();
 };
